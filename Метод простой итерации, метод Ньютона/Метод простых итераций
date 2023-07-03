@@ -2,6 +2,7 @@ x = -1.0 : 0.001 : 2.0;
 f=@(x)atan(x+2);
 plot(x, f(x), 'b'); hold on; grid on; y = x; plot(x, y, 'black');
 
+
 x0 = 0.0;
 x1 = f(x0);
 x0A = x0;
