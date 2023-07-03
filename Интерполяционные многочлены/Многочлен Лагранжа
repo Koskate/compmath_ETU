@@ -1,0 +1,94 @@
+x = linspace(1, 22, 1);
+y = sin(x);
+
+N=length(x);
+% создаем нулевой массив значений интерполяционного полинома
+L=zeros(1, N);
+% в цикле считаем сумму по узлам
+for k=1:N
+    A=1;
+    for j=[1:k-1, k+1:N]
+        A=conv(A, [1/(x(k)-x(j)), -x(j)/(x(k)-x(j))]);
+    end
+    L = L + y(k)*A;
+end
+L
+L_polyfit = polyfit(x, y, 5)
+
+% задание точек, в которых требуется найти значения интерполяционного полинома
+xx=1:0.5:22;
+yy = zeros(1, length(xx));
+for i=1:length(xx)
+    deg = length(L)-1;
+    temp = 0;
+    for j=1:length(L)
+        temp = temp + L(j)*xx(i)^deg;
+        deg = deg - 1;
+    end
+    yy(1, i) = temp;
+end
+
+yy
+polyval(L, xx)
+
+% построение графиков
+plot(x, y, 'o', xx, yy, 'b', xx, sin(xx), 'r'); hold on;
+legend('Точки', 'Многочлен Лагранжа', 'sin(x)', 'Location','southwest')
+ylim([-2, 2]);
+differ = 0;
+for i=1:length(yy)
+    differ = max(abs(yy(i)-sin(xx(i))), differ);
+end
+differ
+
+
+%динамика отклонений
+for i=1:length(yy)
+    if differ == abs(yy(i)-sin(xx(i)))
+        plot([xx(i), xx(i)], [sin(xx(i)), yy(i)], '--');
+        break;
+    end
+end
+
+diff_all = differ;
+for m = 1:1:22
+    x = linspace(1, 22, m);
+    y = sin(x);
+
+    N=length(x);
+    % создаем нулевой массив значений интерполяционного полинома
+    L=zeros(1, N);
+    % в цикле считаем сумму по узлам
+    for k=1:N
+        A=1;
+        for j=[1:k-1, k+1:N]
+            A=conv(A, [1/(x(k)-x(j)), -x(j)/(x(k)-x(j))]);
+        end
+        L = L + y(k)*A;
+    end
+    
+    % задание точек, в которых требуется найти значения интерполяционного полинома
+    xx=1:0.5:22;
+    yy = zeros(1, length(xx));
+    for i=1:length(xx)
+        deg = length(L)-1;
+        temp = 0;
+        for j=1:length(L)
+            temp = temp + L(j)*xx(i)^deg;
+            deg = deg - 1;
+        end
+        yy(1, i) = temp;
+    end
+   
+    differ = 0;
+    for i=1:length(yy)
+        differ = max(abs(yy(i)-sin(xx(i))), differ);
+    end
+    diff_all = [diff_all, differ];
+end
+
+diff_all
+hold off;
+x = 1:length(diff_all);
+plot(x, diff_all(x));
+legend('Динамика отклонения')
