@@ -1,0 +1,27 @@
+for i = 1:10
+    x = linspace(1,10,1000*i);
+    y = sin(x);
+
+    diff_y = cos(x);
+    n = length(x);
+    h = x(2)- x(1);
+
+    max_diff = 0;
+    ag_1 = zeros(1, n-1);
+    for j = 1:n-1
+        ag_1(j)=(y(j+1)-y(j))/h;
+        max_diff = max(abs(diff_y(j) - ag_1(j)), max_diff);
+    end
+    alpha_1 = log(max_diff)/log(h)
+
+    max_diff_Voln = 0;
+    ag_1Voln = zeros(1, n-1);
+    for j = 2:n
+        ag_1Voln(j-1) = (y(j)-y(j-1))/h;
+        max_diff_Voln = max(abs(diff_y(j)-ag_1Voln(j-1)),max_diff_Voln);
+    end
+    alpha_1_Voln = log(max_diff_Voln)/log(h)
+end
+
+C1=max_diff/h
+C2=max_diff_Voln/h
