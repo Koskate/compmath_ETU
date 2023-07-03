@@ -1,0 +1,35 @@
+clc;
+clear;
+integral = -cos(2) + cos(1);
+for i = 1:50
+    n = 101*(2*i - 1);
+    x = linspace(1, 2, n);
+    y = sin(x);
+    h = x(2) - x(1);
+
+    m = 2:n;
+    right_rect = abs(sum(h*y(m)));
+    left_rect = abs(sum(h*y(m-1)));
+    trapezi = abs(sum( (y(m - 1) + y(m))/2 * h ));
+    m = 1:n-1;
+    middle_rect = sum(h*sin((x(m+1) + x(m)) / 2));
+    simpson = (h/3)*(y(1) + 4*sum(y(2:2:n - 1)) + 2*sum(y(3:2:n - 1)) + y(n));
+
+    right_Diff = abs(integral - right_rect);
+    left_Diff = abs(integral - left_rect);
+    middle_Diff = abs(integral - middle_rect);
+    trapezi_Diff = abs(integral - trapezi);
+    simpson_Diff = abs(integral - simpson);
+
+    right_alpha(i) = log(right_Diff)/log(h);
+    left_alpha(i) = log(left_Diff)/log(h);
+    trapezi_alpha(i) = log(trapezi_Diff)/log(h);
+    simpson_alpha(i) = log(simpson_Diff)/log(h);
+    middle_alpha(i) = log(middle_Diff)/log(h);
+end
+
+right_alpha
+left_alpha
+middle_alpha
+trapezi_alpha
+simpson_alpha
