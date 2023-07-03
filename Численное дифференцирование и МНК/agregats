@@ -1,0 +1,42 @@
+x = linspace(1, 10, 10);
+y = sin(x);
+
+diff_y = cos(x);
+h = x(2)-x(1);
+n = length(x);
+
+ag_1 = zeros(1, n-1);
+for i = 1:n-1
+    ag_1(i) = (y(i+1)-y(i))/h;
+end
+ag_1Voln = zeros(1, n-1);
+for i = 2:n
+    ag_1Voln(i-1) = (y(i)-y(i-1))/h;
+end
+
+ag_2 = zeros(1, n-2);
+for i = 1:n-2
+    ag_2(i) = (4*y(i+1) - 3*y(i) - y(i+2))/(2*h);
+end
+
+ag_2Voln = zeros(1, n-2);
+for i = 2:n-1
+    ag_2Voln(i-1) = (y(i+1) - y(i-1))/(2*h);
+end
+
+ag_4 = zeros(1, n-4);
+for i=2:n-3
+    ag_4(i-1) = ((-3)*y(i-1) - 10*y(i) + 18*y(i+1) - 6*y(i+2) + y(i+3))/(12*h);
+end
+
+ag_4Voln = zeros(1, n-4);
+for i=3:n-2
+    ag_4Voln(i-2) = (y(i-2) - 8*y(i-1) + 8*y(i+1) - y(i+2))/(12*h);
+end
+
+plot(x(1:n-1), ag_1, 'green', x(2:n), ag_1Voln, 'b', x, diff_y, '--black');
+legend("I", "I(волновой)", "Реал.дифф.");
+plot(x(1:n-2), ag_2, 'green', x(2:n-1), ag_2Voln, 'b', x, diff_y, '--black');
+legend("II", "II(волновой)", "Реал.дифф.");
+plot(x(2:n-3), ag_4, 'green', x(3:n-2), ag_4Voln, 'b', x, diff_y, '--black')
+legend("IV", "IV(волновой)", "Реал.дифф.");
