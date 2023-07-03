@@ -1,0 +1,65 @@
+clc; 
+clear;
+Xmin= 1;
+Xmax= 3;
+Ymin=0;
+Ymax=1.6;
+alpha= zeros(1, 12);
+checking = -cos(Xmax)+cos(Xmin);
+
+for j =3:15
+N=j*3000;
+
+xx_1=Xmin+(Xmax-Xmin)*rand(N,1);
+yy_1=Ymin+(Ymax-Ymin)*rand(N,1);
+
+s=0;
+f = @(x)sin(x);
+aa_1 = zeros(2, N);
+
+for i=1:N
+if yy_1(i)<=f(xx_1(i))
+s=s+1;
+aa_1(1, i) = xx_1(i);
+aa_1(2, i) = yy_1(i);
+end
+end
+interval_1 = s*(Xmax-Xmin)*(Ymax-Ymin)/N;
+alpha(1, j-2) = log(abs(checking-interval_1))/log((Xmax-Xmin)/N);
+end
+checking
+interval_1
+alpha
+mean(alpha)
+
+x = linspace(Xmin, Xmax, 100);
+gg= f(x);
+
+plot(Xmin, Ymin, Xmax, Ymax, aa_1(1, :), aa_1(2, :), '.', x, gg, '-')
+ylim([Ymin,Ymax])
+xlim([Xmin,Xmax])
+
+
+xx_2 = Xmin+(Xmax-Xmin)*(-0.6*log(1-rand(N,1)));
+yy_2 = Ymin+(Ymax-Ymin)*(-0.6*log(1-rand(N,1)));
+
+hh = -0.6*log(1-rand(1000,1));
+hist(hh,1000)
+
+321211
+s=0;
+aa_2 = zeros(2, N);
+for i=1:N
+if yy_2(i)<=f(xx_2(i))
+s=s+1;
+aa_2(1, i) = xx_2(i);
+aa_2(2, i) = yy_2(i);
+end
+end
+
+interval_1 = s*(Xmax-Xmin)*(Ymax-Ymin)/N
+checking
+
+plot(Xmin, Ymin, Xmax, Ymax, aa_2(1, :), aa_2(2, :), '.', x, gg, '-')
+ylim([Ymin,Ymax])
+xlim([Xmin,Xmax])
