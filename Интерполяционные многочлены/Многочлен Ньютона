@@ -1,0 +1,57 @@
+% Задаем значения точек и функции в этих точках
+x = 1:2:9;
+y = sin(x);
+
+% Вычисляем разделенные разности
+f = zeros(length(x), length(x));
+f(:,1) = y;
+for j = 2:length(x)
+    for i = j:length(x)
+        f(i,j) = (f(i,j-1) - f(i-1,j-1));
+    end
+end
+
+% Строим многочлен Ньютона
+N = zeros(1, length(x));
+N(1, 5) = f(1,1);
+for j = 2:length(x)
+    prod = 1;
+    for i = 1:j-1
+        prod = conv(prod, [1, -x(i)]);
+    end
+    prod = [zeros(1, length(x)-j), prod];
+    znam = (factorial(j-1)*(x(2)- x(1))^(j-1));
+    N = N + f(j,j)*prod./znam;
+end
+N
+N_polyfit = polyfit(x, y, 4)
+
+% задание точек, в которых требуется найти значения интерполяционного полинома
+xx=1:0.1:9;
+yy = zeros(1, length(xx));
+for i=1:length(xx)
+    deg = length(N)-1;
+    temp = 0;
+    for j=1:length(N)
+        temp = temp + N(j)*xx(i)^deg;
+        deg = deg - 1;
+    end
+    yy(1, i) = temp;
+end
+
+% Отображаем многочлен и график функции sin(x) и многочлена на одном графике
+plot(xx, yy, 'b', x, y, 'o', xx, sin(xx), 'r'); hold on
+legend('Многочлен Ньютона', 'точки', 'sin(x)', 'Location', 'southwest')
+
+differ = 0;
+for i=1:length(xx)
+    differ = max(abs(yy(i)-sin(xx(i))), differ);
+end
+differ
+
+for i=1:length(yy)
+        if differ == abs(yy(i)-sin(xx(i)))
+            plot([xx(i), xx(i)], [sin(xx(i)), yy(i)], '--');
+            break;
+        end
+end
