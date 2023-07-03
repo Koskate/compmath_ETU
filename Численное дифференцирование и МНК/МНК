@@ -1,0 +1,46 @@
+n = 20;
+X=linspace(0,1,n)';
+
+p1=5; p2=-3; p3=2;
+Y_true=p1+p2*X+p3*X.^2;
+
+sigma=0.3;
+Z=sigma*randn(n,1); Y_shum=Y_true+Z;
+plot(X,Y_shum, X,Y_shum,'*'), grid
+legend("Соединение","Зашумленные значения")
+A1=ones(n,1); A2=X; A3=X.^2; Par=[A3,A2,A1];
+G1=ones(n,1); G2=X; Straight=[G2, G1];
+
+B=Par'*Par; C=Par'*Y_shum; teta_A=(B^(-1)*C),
+H=Straight'*Straight; J=Straight'*Y_shum; teta_G =(H^(-1)*J),
+podgon_par=Par*teta_A;
+podgon_str=Straight*teta_G;
+
+parab_pol=polyfit(X,Y_shum,2);
+Y_pol=polyval(parab_pol,X);
+str_pol=polyfit(X,Y_shum,1);
+Y_str=polyval(str_pol, X);
+plot(X,Y_shum,'*', X,Y_true, X,podgon_par,'+black',  X,Y_pol,'o'), grid
+legend("Зашумленные значения", "Реал.функция", "Подгонка параболой", "Полифит")
+plot(X,Y_shum,'*', X,Y_true,X, podgon_str, '+black', X,Y_str,'o'), grid
+legend("Зашумленные значения", "Реал.функция", "Подгонка прямой", "Полифит")
+
+nevyaz_par=Y_shum-podgon_par; sum(nevyaz_par.*podgon_par)
+nevyaz_str=Y_shum-podgon_str; sum(nevyaz_str.*podgon_str)
+
+shum_par=sqrt(sum(nevyaz_par.^2)/(n-3))
+shum_str=sqrt(sum(nevyaz_str.^2)/(n-2))
+
+t_y = 1.96;
+x_middle=mean(X); 
+Disp_X=(std(X)^2)/(n);
+
+delta = t_y*shum_par *sqrt(1+(X-x_middle).^2/Disp_X)/sqrt(n);
+f1 = Y_true + delta; f2 = Y_true - delta;
+plot(X,Y_shum,'*', X,Y_true, X,podgon_par,'+black', X, f2, '--', X, f1, '--'), grid
+legend("Зашумленные значения", "Реал.функция", "Подгонка прямой", "Границы дов.инт.")
+
+delta = t_y*shum_str *sqrt(1+(X-x_middle).^2/Disp_X)/sqrt(n);
+f1 = Y_true + delta; f2 = Y_true - delta;
+plot(X,Y_shum,'*', X,Y_true, X,podgon_str,'+black', X, f2, '--', X, f1, '--'), grid
+legend("Зашумленные значения", "Реал.функция", "Подгонка прямой", "Границы дов.инт.")
